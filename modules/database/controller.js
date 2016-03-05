@@ -31,4 +31,11 @@ function Rename(request,reply) {
 
 function Delete(request,reply) {
 
+  var db = dbUtils.getDb();
+  db[request.query.database].dropDatabase();
+  db[request.query.database] = null;
+  setTimeout(function(){
+    socketUtils.broadcast('db-delete',request.query.database);
+  },5000);
+  reply.next();
 }

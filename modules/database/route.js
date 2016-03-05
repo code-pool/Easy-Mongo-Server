@@ -23,6 +23,27 @@ module.exports = {
         series.execute(request,reply);
       }
     }
+  },
+
+  deleteDB : {
+    method : 'DELETE',
+    path : '/database',
+    config : {
+      auth : {
+        strategy : 'token',
+        scope : ['admin']
+      },
+      validate : Validator.validateReqDelete(),
+      handler : function(request,reply) {
+
+        var series = new Series([
+          Validator.delete,
+          Controller.delete
+        ]);
+        
+        series.execute(request,reply);
+      }
+    }
   }
   
 }

@@ -10,7 +10,8 @@ module.exports = {
   connectAll : ConnectAll,
   connect : Connect,
   dbInfo : DbInfo,
-  schemaVerified : SchemaVerified
+  schemaVerified : SchemaVerified,
+  validDB : ValidDB
 };
 
 function List() {
@@ -103,4 +104,11 @@ function SetDB(database_name , database) {
 
 function GetDB(){
   return db;
+}
+
+function ValidDB(db_name){
+  if(db[db_name]) {
+    return true;
+  }
+  return false;
 }

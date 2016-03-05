@@ -1,14 +1,19 @@
 var async = require('async'),
     dbUtils = require('utils/database'),
     listener = require('../index').listener,
-    // io = require('socket.io')(listener),
+    io,
     socket;
 
 module.exports = {
   initialize : Initialize,
-  allDbInfo : AllDbInfo
+  allDbInfo : AllDbInfo,
+  setIo : SetIO,
+  broadCast : BroadCast
 };
 
+function SetIO(io_connected){
+  io = io_connected;
+}
 
 function Initialize(__socket) {
   
@@ -81,6 +86,10 @@ function DbInfo() {
 
 function AllDbInfo(){
 
+}
+
+function BroadCast(event,data){
+  io.emit(event,data);
 }
 
 

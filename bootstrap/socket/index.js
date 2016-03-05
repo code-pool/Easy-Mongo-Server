@@ -8,6 +8,7 @@ function setup() {
     console.log('received connections');
     socketUtils.initialize(socket);
   });
+  socketUtils.setIo(io);
 }
 
 setup();

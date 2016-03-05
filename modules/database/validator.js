@@ -1,5 +1,8 @@
 var Promise = require('bluebird'),
-    authUtils = require('utils/auth');
+    joi = require('joi'),
+    dbSecret = process.env.DB_DELETE_SECRET || 'killme',
+    authUtils = require('utils/auth'),
+    dbUtils = require('utils/database');
 
 module.exports = {
 
@@ -8,7 +11,8 @@ module.exports = {
   rename : Rename,
   delete : Delete,
 
-  validateReqAll : ValidateReqAll
+  validateReqAll : ValidateReqAll,
+  validateReqDelete : ValidateReqDelete
 };
 
 function All(request,reply) {
@@ -24,9 +28,30 @@ function Rename(request,reply) {
 }
 
 function Delete(request,reply) {
+  
+  if(request.query.secret !== dbSecret) {
+    reply.next('Incorrect secret');
+    return;
+  }
+
+  if(!dbUtils.validDB(request.query.database)) {
+    reply.next('Incorrect database name');
+    return;
+  }
+
   reply.next();
+  
 }
 
 function ValidateReqAll() {
   return {};
+}
+
+function ValidateReqDelete() {
+  return {
+    'query' : {
+      'database' : joi.string().required(),
+      'secret' : joi.string().required()
+    }
+  }
 }
