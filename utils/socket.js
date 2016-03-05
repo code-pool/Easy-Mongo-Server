@@ -1,12 +1,11 @@
 var async = require('async'),
     dbUtils = require('utils/database'),
     listener = require('../index').listener,
-    io = require('socket.io')(listener),
+    // io = require('socket.io')(listener),
     socket;
 
 module.exports = {
   initialize : Initialize,
-  broadcastDbInfo : BroadcastDbInfo,
   allDbInfo : AllDbInfo
 };
 
@@ -30,13 +29,18 @@ function Initialize(__socket) {
 
 function Listeners() {
 
-  var listeners = [];
+  var listeners = [
+    {
+      'event' : 'db-info',
+      'handler' : DbInfo
+    }
+  ];
 
   return listeners;
 
 };
 
-function AllDbInfo(){
+function DbInfo() {
 
   var funcArray = [],
       len;
@@ -53,14 +57,16 @@ function AllDbInfo(){
           dbUtils.dbInfo(db_name)
           .then(function(data){
             dbInfo = data;
+            dbInfo.name = db_name;
             return dbUtils.schemaVerified(db_name);
           })
           .then(function(verified){
             dbInfo.verified = verified;
-            BroadcastDbInfo(dbInfo);
+            socket.emit('db-info',dbInfo);
             cb();
           })
-          .catch(function(){
+          .catch(function(err){
+            console.log(err)
             cb();
           })
         }
@@ -70,11 +76,11 @@ function AllDbInfo(){
     async.parallel(funcArray,function(err,results){
       console.log('Done broadcasting all db information')
     });
-  })
+  });
 }
 
-function BroadcastDbInfo(data) {
-  io.sockets.emit('db-info',data);
+function AllDbInfo(){
+
 }
 
 
