@@ -9,7 +9,8 @@ module.exports = {
   getDb : GetDB,
   connectAll : ConnectAll,
   connect : Connect,
-  dbInfo : DbInfo
+  dbInfo : DbInfo,
+  schemaVerified : SchemaVerified
 };
 
 function List() {
@@ -69,6 +70,16 @@ function Connect(db_name){
   });
 }
 
+function SchemaVerified(db_name) {
+  return new Promise(function(resolve,reject){
+    db[db_name].collection('__schema').findOne({},function(err,data){
+      if(err || !data) {
+        resolve(false);
+      }
+      resolve(true);
+    });
+  });
+}
 function DbInfo(db_name){
   return new Promise(function(resolve,reject){
     db[db_name].stats(function(err,data){

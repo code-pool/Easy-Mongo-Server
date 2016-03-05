@@ -1,5 +1,7 @@
 var async = require('async'),
     dbUtils = require('utils/database'),
+    listener = require('../index').listener,
+    io = require('socket.io')(listener),
     socket;
 
 module.exports = {
@@ -28,17 +30,11 @@ function Initialize(__socket) {
 
 function Listeners() {
 
-  var listeners = [
-                    {
-                      'event'   : 'db-info', // get db info
-                      'handler' : DbInfo
-                    }
-                  ];
+  var listeners = [];
 
   return listeners;
 
 };
-
 
 function AllDbInfo(){
 
@@ -53,12 +49,21 @@ function AllDbInfo(){
     while(len--){
       funcArray.push((function(db_name){
         return function(cb){
+          var dbInfo;
           dbUtils.dbInfo(db_name)
-                .then(function(data){
-                  console.log(data);
-                  BroadcastDbInfo(data);
-                  cb();
-                })
+          .then(function(data){
+            dbInfo = data;
+            return dbUtils.schemaVerified(db_name);
+          })
+          .then(function(verified){
+            dbInfo.verified = verified;
+            console.log(dbInfo)
+            BroadcastDbInfo(dbInfo);
+            cb();
+          })
+          .catch(function(){
+            cb();
+          })
         }
       })(response[len].db_name));
     }
@@ -70,7 +75,7 @@ function AllDbInfo(){
 }
 
 function BroadcastDbInfo(data) {
-  socket.emit('db-info',data);
+  io.sockets.emit('db-info',data);
 }
 
 
