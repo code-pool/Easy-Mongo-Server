@@ -22,17 +22,19 @@ function All(request,reply) {
 }
 
 function Add(request,reply) {
+  reply('Successfully started db creation');
   dbUtils.connect(request.payload.database)
          .then(function(){
           return dbUtils.initDB(request.payload.database);
          })
          .then(function(){
-          socketUtils.broadcast('db-create',request.payload.database);
-          return dbUtils.DbInfo(request.payload.database);
+          socketUtils.broadCast('db-create',{db_name : request.payload.database, stats : {}});
+          return dbUtils.dbInfo(request.payload.database);
          })
          .then(function(data){
           data.verified = true;
-          socketUtils.broadcast('db-info',data);
+          data.name = request.payload.database;
+          socketUtils.broadCast('db-info',data);
          });
 }
 

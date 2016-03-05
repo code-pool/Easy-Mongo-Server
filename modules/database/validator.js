@@ -27,7 +27,7 @@ function Add(request,reply) {
     return;
   }
 
-  reply('Successfully started db creation');
+  reply.next();
 }
 
 function Rename(request,reply) {
