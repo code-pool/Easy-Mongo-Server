@@ -105,6 +105,7 @@ function AllCollectionInfo(db_name,collections){
                })
                .then(function(verified){
                 info.verified = verified;
+                info.name = col_name;
                 console.log(info);
                 BroadCast('collection-info',info);
                 cb();
