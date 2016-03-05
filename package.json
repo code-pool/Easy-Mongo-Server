@@ -22,9 +22,11 @@
   "dependencies": {
     "bluebird": "^3.3.3",
     "dotenv": "2.0.0",
+    "globby": "1.2.0",
     "hapi": "11.1.4",
     "hapi-auth-jwt": "^4.0.0",
     "hapi-next": "^0.6.0",
+    "joi": "^8.0.4",
     "jsonwebtoken": "^5.7.0",
     "redis": "^2.4.2"
   }
