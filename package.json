@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/code-pool/Easy-Mongo-Server#readme",
   "dependencies": {
+    "async": "^1.5.2",
     "bluebird": "^3.3.3",
     "dotenv": "2.0.0",
     "globby": "1.2.0",

@@ -1,5 +1,6 @@
 var Promise = require('bluebird'),
-    dbUtils = require('utils/database');
+    dbUtils = require('utils/database'),
+    socketUtils = require('utils/socket');
 
 module.exports = {
   all : All,
@@ -13,6 +14,7 @@ function All(request,reply) {
         .then(function(data){
           reply.data = data;
           reply.next();
+          socketUtils.allDbInfo();
         })
         .catch(function(err){
           reply.next(err);

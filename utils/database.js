@@ -8,7 +8,8 @@ module.exports = {
   setDb : SetDB,
   getDb : GetDB,
   connectAll : ConnectAll,
-  connect : Connect
+  connect : Connect,
+  dbInfo : DbInfo
 };
 
 function List() {
@@ -63,10 +64,16 @@ function Connect(db_name){
 
   var url = dbServer + db_name;
   MongoClient.connect(url, function(err, connected) {
-
     console.log("Connected to the database",db_name);
     SetDB(db_name,connected);
-    
+  });
+}
+
+function DbInfo(db_name){
+  return new Promise(function(resolve,reject){
+    db[db_name].stats(function(err,data){
+      resolve({size : (data.dataSize/(1024 * 1024)), collections : data.collections});
+    });
   });
 }
 
