@@ -1,10 +1,14 @@
 var Promise = require('bluebird'),
-    db;
+    MongoClient = require('mongodb').MongoClient,
+    dbServer = 'mongodb://localhost:27017/',
+    db = {};
 
 module.exports = { 
   list : List,
   setDb : SetDB,
-  getDb : GetDB
+  getDb : GetDB,
+  connectAll : ConnectAll,
+  connect : Connect
 };
 
 function List() {
@@ -15,7 +19,7 @@ function List() {
       currObj = {};
 
   return new Promise(function(resolve,reject){
-    db.admin().listDatabases().then(function(data){
+    db['test'].admin().listDatabases().then(function(data){
       databases = data.databases || [];
       len = databases.length;
       while(len--) {
@@ -30,8 +34,44 @@ function List() {
   });
 }
 
-function SetDB(database) {
-  db = database;
+function ConnectAll() {
+  
+  var len,
+      currdbName;
+
+  List()
+  .then(function(databases){
+    len = databases.length;
+    
+    while(len--) {
+      currdbName = databases[len].db_name;
+      if(db[currdbName]) {
+        continue;
+      }
+      Connect(currdbName);
+    }
+  })
+  .catch(function(err){
+    console.log('Error connecting multi database')
+    console.log(err)
+  });
+
+}
+
+
+function Connect(db_name){
+
+  var url = dbServer + db_name;
+  MongoClient.connect(url, function(err, connected) {
+
+    console.log("Connected to the database",db_name);
+    SetDB(db_name,connected);
+    
+  });
+}
+
+function SetDB(database_name , database) {
+  db[database_name] = database;
 }
 
 function GetDB(){

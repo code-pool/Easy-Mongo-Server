@@ -8,7 +8,8 @@ function Initialize(){
   MongoClient.connect(url, function(err, connected) {
 
     console.log("Connected to the databse");
-    dbUtils.setDb(connected);
+    dbUtils.setDb('test',connected);
+    dbUtils.connectAll();
     
   });
 }
