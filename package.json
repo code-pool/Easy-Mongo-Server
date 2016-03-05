@@ -1,0 +1,27 @@
+{
+  "name": "easy-mongo-server",
+  "version": "1.0.0",
+  "description": "Server for easy mongo admin client",
+  "main": "index.js",
+  "scripts": {
+    "postinstall" : "npm --prefix=. link database/ modules/ utils/ bootstrap/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/code-pool/Easy-Mongo-Server.git"
+  },
+  "keywords": [
+    "mongodb"
+  ],
+  "author": "pranaydubey3009@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/code-pool/Easy-Mongo-Server/issues"
+  },
+  "homepage": "https://github.com/code-pool/Easy-Mongo-Server#readme",
+  "dependencies" : {
+    "dotenv": "2.0.0",
+    "hapi": "11.1.4"
+  }
+}
+
