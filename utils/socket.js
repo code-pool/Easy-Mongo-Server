@@ -57,7 +57,6 @@ function AllDbInfo(){
           })
           .then(function(verified){
             dbInfo.verified = verified;
-            console.log(dbInfo)
             BroadcastDbInfo(dbInfo);
             cb();
           })

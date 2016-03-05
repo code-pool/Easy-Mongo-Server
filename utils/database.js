@@ -18,19 +18,28 @@ function List() {
   var databases = [],
       formatted = [],
       len = [],
+      currDb,
+      blackList = ['admin','test'],
       currObj = {};
 
   return new Promise(function(resolve,reject){
     db['test'].admin().listDatabases().then(function(data){
+      
       databases = data.databases || [];
       len = databases.length;
+
       while(len--) {
+
+        currDb = databases[len].name;
+        if(blackList.indexOf(currDb) >= 0){
+          continue;
+        }
+
         currObj = {'db_name' : databases[len].name,'stats' : {}};
         formatted.push(currObj);
         currObj = {};
       }
-      formatted.splice(formatted.indexOf('admin'),1);
-      formatted.splice(formatted.indexOf('test'),1);
+
       resolve(formatted);
     });    
   });
