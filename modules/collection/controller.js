@@ -26,7 +26,9 @@ function List(request,reply) {
       }
       formatted.push({'collection_name' : colName,'stats': {}});
     }
-    socketUtils.allCollectionInfo(request.params.database,formatted);
+    setTimeout(function(){
+      socketUtils.allCollectionInfo(request.params.database,formatted);
+    },2000);
     reply.data = formatted;
     reply.next();
   });
