@@ -12,8 +12,30 @@ module.exports = {
   dbInfo : DbInfo,
   schemaVerified : SchemaVerified,
   validDB : ValidDB,
-  initDB : InitDB
+  initDB : InitDB,
+  collectionInfo : CollectionInfo,
+  collectionSchemaVerified : CollectionSchemaVerified
 };
+
+function CollectionInfo(db_name,col_name){
+  return new Promise(function(resolve,reject){
+    db[db_name].collection(col_name).count(function(err,count){
+      resolve(count)
+    });    
+  });
+}
+
+function CollectionSchemaVerified(db_name,col_name){
+  return new Promise(function(resolve,reject){
+    db[db_name].collection('__schema').findOne({'collection' : col_name},function(err,result){
+      if(err || !result) {
+        resolve(false);
+        return
+      }
+      resolve(true);
+    });
+  });
+}
 
 function List() {
 

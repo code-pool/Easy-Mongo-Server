@@ -8,7 +8,8 @@ module.exports = {
   initialize : Initialize,
   allDbInfo : AllDbInfo,
   setIo : SetIO,
-  broadCast : BroadCast
+  broadCast : BroadCast,
+  allCollectionInfo : AllCollectionInfo
 };
 
 function SetIO(io_connected){
@@ -86,6 +87,35 @@ function DbInfo() {
 
 function AllDbInfo(){
 
+}
+
+function AllCollectionInfo(db_name,collections){
+  
+  var funcArray = [],
+      len = collections.length;
+
+  while(len--) {
+    funcArray.push((function(db_name,col_name){
+      return function(cb){
+        var info = {};
+        dbUtils.collectionInfo(db_name,col_name)
+               .then(function(count){
+                info.count = count;
+                return dbUtils.collectionSchemaVerified(db_name,col_name);
+               })
+               .then(function(verified){
+                info.verified = verified;
+                console.log(info);
+                BroadCast('collection-info',info);
+                cb();
+               })
+      }
+    })(db_name,collections[len].collection_name));
+  }
+  async.parallel(funcArray,function(err,results){
+    console.log('Done broadcasting all the information of the collection');
+  });
+  
 }
 
 function BroadCast(event,data){
