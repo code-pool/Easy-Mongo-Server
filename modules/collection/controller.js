@@ -6,7 +6,8 @@ module.exports = {
   list : List,
   add : Add,
   rename : Rename,
-  delete : Delete
+  delete : Delete,
+  addDummy : AddDummy
 };
 
 function List(request,reply) {
@@ -35,7 +36,27 @@ function List(request,reply) {
 }
 
 function Add(request,reply) {
+  var db = dbUtils.getDb();
+  console.log(db[request.params.database])
+  db[request.params.database].collection('__schema').insert(request.payload,function(err,result){
+    console.log(err);
+    reply.next();
+  });
+}
 
+function AddDummy(request,reply){
+
+  var db = dbUtils.getDb(),
+      obj = dbUtils.getDummyObj(request.payload.fields);
+
+  db[request.params.database].collection(request.payload.collection).insert(obj,function(err,results){
+    console.log(err);
+    console.log(results);
+    setTimeout(function(){
+      socketUtils.broadCast('collection-info',{'name' : request.payload.collection,'count' : 1,'verfied' : true });
+    },2000);
+    reply.next();
+  });
 }
 
 function Rename(request,reply) {

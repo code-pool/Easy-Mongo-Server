@@ -14,7 +14,8 @@ module.exports = {
   validDB : ValidDB,
   initDB : InitDB,
   collectionInfo : CollectionInfo,
-  collectionSchemaVerified : CollectionSchemaVerified
+  collectionSchemaVerified : CollectionSchemaVerified,
+  getDummyObj : GetDummyObj
 };
 
 function CollectionInfo(db_name,col_name){
@@ -150,4 +151,24 @@ function InitDB(db_name) {
       resolve();
     });
   });
+}
+
+function GetDummyObj(fields){
+
+  var obj = {},
+      len = fields.length,
+      defaults = {
+        'String' : 'demo',
+        'Number' : 1,
+        'Date' : new Date(),
+        'Boolean' : true,
+        'Array' : [],
+        'Object' : {}
+      };
+
+  while(len--) {
+    obj[fields[len].key] = defaults[fields[len].type];
+  }
+
+  return obj;
 }

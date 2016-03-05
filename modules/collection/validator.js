@@ -25,7 +25,6 @@ function List(request,reply) {
 }
 
 function Add(request,reply) {
-
   reply.next();
 }
 
@@ -48,7 +47,15 @@ function ValidateReqList() {
 }
 
 function ValidateReqAdd() {
-  return { };
+  return { 
+    'payload' : {
+      'collection' : joi.string().required(),
+      'fields' : joi.array().required()
+    },
+    'params' : {
+      'database' : joi.string().required()
+    }
+  };
 }
 
 function ValidateReqDelete() {
