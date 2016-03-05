@@ -2,7 +2,7 @@ var jwt = require('jsonwebtoken'),
     Promise = require('bluebird'),
     client = require('utils/auth').client,
     privateKey = process.env.secret || 'BbZJjyoXAdr8BUZuiKKARWimKfrSmQ6fv8kZ7OFfc',
-    server = require('../../'); // find a way to include the main file by requiring lets-chat instead of ../app
+    server = require('../../index'); // find a way to include the main file by requiring lets-chat instead of ../app
 
 var validate = function (decodedToken, callback) {
 
@@ -32,7 +32,7 @@ function setup() {
 }
 
 function initialize() {
-    
+
   client.on('connect', function() {
     console.log('Connected to Redis Server');
   }); 

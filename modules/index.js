@@ -28,7 +28,6 @@ function processPath(path) {
 
 function walkThroughRoutes(routes,server) {
   Object.keys(routes).forEach(function(routeName) {
-    console.log(routeName)
     server.route(routes[routeName]);
   });
 }
