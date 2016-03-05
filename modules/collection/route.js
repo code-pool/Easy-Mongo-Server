@@ -4,7 +4,7 @@ var Series = require('hapi-next'),
 
 module.exports = {
   
-  login : {
+  list : {
     method : 'GET',
     path : '/{database}',
     config : {
