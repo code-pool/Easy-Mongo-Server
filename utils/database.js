@@ -11,7 +11,8 @@ module.exports = {
   connect : Connect,
   dbInfo : DbInfo,
   schemaVerified : SchemaVerified,
-  validDB : ValidDB
+  validDB : ValidDB,
+  initDB : InitDB
 };
 
 function List() {
@@ -73,11 +74,15 @@ function ConnectAll() {
 
 function Connect(db_name){
 
-  var url = dbServer + db_name;
-  MongoClient.connect(url, function(err, connected) {
-    console.log("Connected to the database",db_name);
-    SetDB(db_name,connected);
+  return new Promise(function(resolve,reject){
+    var url = dbServer + db_name;
+    MongoClient.connect(url, function(err, connected) {
+      console.log("Connected to the database",db_name);
+      SetDB(db_name,connected);
+      resolve();
+    });    
   });
+
 }
 
 function SchemaVerified(db_name) {
@@ -90,6 +95,7 @@ function SchemaVerified(db_name) {
     });
   });
 }
+
 function DbInfo(db_name){
   return new Promise(function(resolve,reject){
     db[db_name].stats(function(err,data){
@@ -111,4 +117,15 @@ function ValidDB(db_name){
     return true;
   }
   return false;
+}
+
+function InitDB(db_name) {
+  return new Promise(function(resolve,reject){
+    db[db_name].collection('__schema').insertOne({},function(err,result){
+      if(err){
+        reject(err);
+      }
+      resolve();
+    });
+  });
 }

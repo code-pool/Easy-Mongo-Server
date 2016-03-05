@@ -22,7 +22,18 @@ function All(request,reply) {
 }
 
 function Add(request,reply) {
-
+  dbUtils.connect(request.payload.database)
+         .then(function(){
+          return dbUtils.initDB(request.payload.database);
+         })
+         .then(function(){
+          socketUtils.broadcast('db-create',request.payload.database);
+          return dbUtils.DbInfo(request.payload.database);
+         })
+         .then(function(data){
+          data.verified = true;
+          socketUtils.broadcast('db-info',data);
+         });
 }
 
 function Rename(request,reply) {

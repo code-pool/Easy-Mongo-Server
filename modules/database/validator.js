@@ -12,7 +12,8 @@ module.exports = {
   delete : Delete,
 
   validateReqAll : ValidateReqAll,
-  validateReqDelete : ValidateReqDelete
+  validateReqDelete : ValidateReqDelete,
+  validateReqAdd : ValidateReqAdd
 };
 
 function All(request,reply) {
@@ -20,7 +21,13 @@ function All(request,reply) {
 }
 
 function Add(request,reply) {
-  reply.next();
+
+  if(dbUtils.validDB(request.query.database)) {
+    reply.next('Database already exists!');
+    return;
+  }
+
+  reply('Successfully started db creation');
 }
 
 function Rename(request,reply) {
@@ -45,6 +52,14 @@ function Delete(request,reply) {
 
 function ValidateReqAll() {
   return {};
+}
+
+function ValidateReqAdd() {
+  return {
+    'payload' : {
+      'database' : joi.string().required()
+    }
+  };
 }
 
 function ValidateReqDelete() {

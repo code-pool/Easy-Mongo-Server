@@ -44,6 +44,27 @@ module.exports = {
         series.execute(request,reply);
       }
     }
-  }
+  },
+
+  create : {
+    method : 'POST',
+    path : '/',
+    config : {
+      auth : {
+        strategy : 'token',
+        scope : ['admin']
+      },
+      validate : Validator.validateReqAll(),
+      handler : function(request,reply) {
+
+        var series = new Series([
+          Validator.add,
+          Controller.add
+        ]);
+        
+        series.execute(request,reply);
+      }
+    }
+  },
   
 }
