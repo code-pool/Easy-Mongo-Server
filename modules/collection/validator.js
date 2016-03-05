@@ -35,7 +35,11 @@ function Rename(request,reply) {
 
 function Delete(request,reply) {
 
-  reply.next();
+  if(dbUtils.validDB(request.params.database)) {
+    reply.next();
+    return;
+  }
+  reply.next('No database found');
   
 }
 
@@ -50,7 +54,8 @@ function ValidateReqAdd() {
 function ValidateReqDelete() {
   return {
     'params' : {
-      'database' : joi.string().required()
+      'database' : joi.string().required(),
+      'collection' : joi.string().required()
     }
   };
 }

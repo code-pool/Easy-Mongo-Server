@@ -41,5 +41,14 @@ function Rename(request,reply) {
 }
 
 function Delete(request,reply) {
+  
+  var db = dbUtils.getDb(),
+      db_name = request.params.database,
+      col_name = request.params.collection;
 
+  db[db_name].collection(col_name).drop(function(err,results){
+    socketUtils.broadCast('collection-delete',{'database' : db_name,'collection' : col_name });
+  });
+
+  reply.next();
 }

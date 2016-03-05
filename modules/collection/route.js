@@ -23,5 +23,26 @@ module.exports = {
         series.execute(request,reply);
       }
     }
+  },
+
+  delete : {
+    method : 'DELETE',
+    path : '/{database}/{collection}',
+    config : {
+      auth : {
+        strategy : 'token',
+        scope : ['admin']
+      },
+      validate : Validator.validateReqList(),
+      handler : function(request,reply) {
+
+        var series = new Series([
+          Validator.delete,
+          Controller.delete
+        ]);
+        
+        series.execute(request,reply);
+      }
+    }
   }
 }
