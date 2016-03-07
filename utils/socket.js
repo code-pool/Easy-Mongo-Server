@@ -63,7 +63,7 @@ function DbInfo() {
           dbUtils.dbInfo(db_name)
           .then(function(data){
             dbInfo = data;
-            dbInfo.name = db_name;
+            dbInfo.database = db_name;
             return dbUtils.schemaVerified(db_name);
           })
           .then(function(verified){
