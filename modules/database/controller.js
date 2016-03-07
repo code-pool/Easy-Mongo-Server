@@ -28,12 +28,12 @@ function Add(request,reply) {
           return dbUtils.initDB(request.payload.database);
          })
          .then(function(){
-          socketUtils.broadCast('db-create',{db_name : request.payload.database, stats : {}});
+          socketUtils.broadCast('db-create',{database : request.payload.database, stats : {}});
           return dbUtils.dbInfo(request.payload.database);
          })
          .then(function(data){
           data.verified = true;
-          data.name = request.payload.database;
+          data.database = request.payload.database;
           setTimeout(function(){
             socketUtils.broadCast('db-info',data)
           },3000);
