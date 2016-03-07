@@ -57,14 +57,14 @@ function DbInfo() {
     len = response.length;
 
     while(len--){
-      funcArray.push((function(db_name){
+      funcArray.push((function(database){
         return function(cb){
           var dbInfo;
-          dbUtils.dbInfo(db_name)
+          dbUtils.dbInfo(database)
           .then(function(data){
             dbInfo = data;
-            dbInfo.database = db_name;
-            return dbUtils.schemaVerified(db_name);
+            dbInfo.database = database;
+            return dbUtils.schemaVerified(database);
           })
           .then(function(verified){
             dbInfo.verified = verified;
@@ -78,7 +78,7 @@ function DbInfo() {
             cb();
           })
         }
-      })(response[len].db_name));
+      })(response[len].database));
     }
 
     async.parallel(funcArray,function(err,results){
@@ -91,19 +91,19 @@ function AllDbInfo(){
 
 }
 
-function AllCollectionInfo(db_name,collections){
+function AllCollectionInfo(database,collections){
   
   var funcArray = [],
       len = collections.length;
 
   while(len--) {
-    funcArray.push((function(db_name,col_name){
+    funcArray.push((function(database,col_name){
       return function(cb){
         var info = {};
-        dbUtils.collectionInfo(db_name,col_name)
+        dbUtils.collectionInfo(database,col_name)
                .then(function(count){
                 info.count = count;
-                return dbUtils.collectionSchemaVerified(db_name,col_name);
+                return dbUtils.collectionSchemaVerified(database,col_name);
                })
                .then(function(verified){
                 info.verified = verified;
@@ -113,7 +113,7 @@ function AllCollectionInfo(db_name,collections){
                 cb();
                })
       }
-    })(db_name,collections[len].collection_name));
+    })(database,collections[len].collection_name));
   }
   async.parallel(funcArray,function(err,results){
     console.log('Done broadcasting all the information of the collection');

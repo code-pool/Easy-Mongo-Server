@@ -18,17 +18,17 @@ module.exports = {
   getDummyObj : GetDummyObj
 };
 
-function CollectionInfo(db_name,col_name){
+function CollectionInfo(database,col_name){
   return new Promise(function(resolve,reject){
-    db[db_name].collection(col_name).count(function(err,count){
+    db[database].collection(col_name).count(function(err,count){
       resolve(count)
     });    
   });
 }
 
-function CollectionSchemaVerified(db_name,col_name){
+function CollectionSchemaVerified(database,col_name){
   return new Promise(function(resolve,reject){
-    db[db_name].collection('__schema').findOne({'collection' : col_name},function(err,result){
+    db[database].collection('__schema').findOne({'collection' : col_name},function(err,result){
       if(err || !result) {
         resolve(false);
         return
@@ -60,7 +60,7 @@ function List() {
           continue;
         }
 
-        currObj = {'db_name' : databases[len].name,'stats' : {}};
+        currObj = {'database' : databases[len].name,'stats' : {}};
         formatted.push(currObj);
         currObj = {};
       }
@@ -80,7 +80,7 @@ function ConnectAll() {
     len = databases.length;
     
     while(len--) {
-      currdbName = databases[len].db_name;
+      currdbName = databases[len].database;
       if(db[currdbName]) {
         continue;
       }
@@ -95,22 +95,22 @@ function ConnectAll() {
 }
 
 
-function Connect(db_name){
+function Connect(database){
 
   return new Promise(function(resolve,reject){
-    var url = dbServer + db_name;
+    var url = dbServer + database;
     MongoClient.connect(url, function(err, connected) {
-      console.log("Connected to the database",db_name);
-      SetDB(db_name,connected);
+      console.log("Connected to the database",database);
+      SetDB(database,connected);
       resolve();
     });    
   });
 
 }
 
-function SchemaVerified(db_name) {
+function SchemaVerified(database) {
   return new Promise(function(resolve,reject){
-    db[db_name].collection('__schema').findOne({},function(err,data){
+    db[database].collection('__schema').findOne({},function(err,data){
       if(err || !data) {
         resolve(false);
       }
@@ -119,9 +119,9 @@ function SchemaVerified(db_name) {
   });
 }
 
-function DbInfo(db_name){
+function DbInfo(database){
   return new Promise(function(resolve,reject){
-    db[db_name].stats(function(err,data){
+    db[database].stats(function(err,data){
       resolve({size : (data.dataSize/(1024 * 1024)), collections : data.collections});
     });
   });
@@ -135,16 +135,16 @@ function GetDB(){
   return db;
 }
 
-function ValidDB(db_name){
-  if(db[db_name]) {
+function ValidDB(database){
+  if(db[database]) {
     return true;
   }
   return false;
 }
 
-function InitDB(db_name) {
+function InitDB(database) {
   return new Promise(function(resolve,reject){
-    db[db_name].collection('__schema').insertOne({},function(err,result){
+    db[database].collection('__schema').insertOne({},function(err,result){
       if(err){
         reject(err);
       }
