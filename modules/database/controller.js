@@ -50,7 +50,7 @@ function Delete(request,reply) {
   db[request.query.database].dropDatabase();
   db[request.query.database] = null;
   setTimeout(function(){
-    socketUtils.broadCast('db-delete',request.query.database);
+    socketUtils.broadCast('db-delete',{database : request.query.database});
   },3000);
   reply.next();
 }
