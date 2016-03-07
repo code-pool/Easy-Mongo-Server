@@ -53,7 +53,7 @@ function AddDummy(request,reply){
     console.log(err);
     console.log(results);
     setTimeout(function(){
-      socketUtils.broadCast('collection-info',{'name' : request.payload.collection,'count' : 1,'verfied' : true });
+      socketUtils.broadCast('collection-info',{'name' : request.payload.collection,'count' : 1,'verified' : true });
     },2000);
     reply.next();
   });
