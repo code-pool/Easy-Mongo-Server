@@ -68,8 +68,10 @@ function DbInfo() {
           })
           .then(function(verified){
             dbInfo.verified = verified;
-            socket.emit('db-info',dbInfo);
-            cb();
+            setTimeout(function(){
+              socket.emit('db-info',dbInfo);
+              cb();
+            },3000);
           })
           .catch(function(err){
             console.log(err)

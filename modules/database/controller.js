@@ -34,7 +34,9 @@ function Add(request,reply) {
          .then(function(data){
           data.verified = true;
           data.name = request.payload.database;
-          socketUtils.broadCast('db-info',data);
+          setTimeout(function(){
+            socketUtils.broadCast('db-info',data)
+          },3000);
          });
 }
 
@@ -49,6 +51,6 @@ function Delete(request,reply) {
   db[request.query.database] = null;
   setTimeout(function(){
     socketUtils.broadCast('db-delete',request.query.database);
-  },5000);
+  },3000);
   reply.next();
 }
