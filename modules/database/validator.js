@@ -2,6 +2,7 @@ var Promise = require('bluebird'),
     joi = require('joi'),
     dbSecret = process.env.DB_DELETE_SECRET || 'killme',
     authUtils = require('utils/auth'),
+    fs = require('fs'),
     dbUtils = require('utils/database');
 
 module.exports = {
@@ -10,6 +11,7 @@ module.exports = {
   add : Add,
   rename : Rename,
   delete : Delete,
+  dump : Dump,
   download : Download,
 
   validateReqAll : ValidateReqAll,
@@ -52,7 +54,7 @@ function Delete(request,reply) {
   
 }
 
-function Download(request,reply) {
+function Dump(request,reply) {
 
   if(dbUtils.validDB(request.params.database)) {
     reply.next();
@@ -61,6 +63,16 @@ function Download(request,reply) {
 
   reply.next('Database does not exist');
   
+}
+
+function Download(request,reply){
+  var path = __dirname + '/../../' + request.params.database + '.zip';
+  console.log(path);
+  if(fs.existsSync(path)) {
+    reply.next();
+    return;
+  }
+  reply.next('Zip file does not exist');
 }
 
 function ValidateReqAll() {

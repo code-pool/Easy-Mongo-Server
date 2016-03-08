@@ -1,6 +1,7 @@
 var Promise = require('bluebird'),
     dbUtils = require('utils/database'),
     socketUtils = require('utils/socket'),
+    fs = require('fs'),
     childProcess = require('child_process');
 
 module.exports = {
@@ -9,7 +10,8 @@ module.exports = {
   rename : Rename,
   delete : Delete,
   dump : Dump,
-  compress : Compress
+  compress : Compress,
+  download : Download
 };
 
 function All(request,reply) {
@@ -21,7 +23,7 @@ function All(request,reply) {
         })
         .catch(function(err){
           reply.next(err);
-        })
+        });
 }
 
 function Add(request,reply) {
@@ -70,7 +72,7 @@ function Dump(request,reply) {
 }
 
 function Compress(request,reply) {
-  
+
   dbUtils.compress(request.params.database)
   .then(function(){
     reply.next();
@@ -79,4 +81,10 @@ function Compress(request,reply) {
     reply.next(err);  
   });
   
+}
+
+function Download(request,reply) {
+  var path = __dirname + '/../../' + request.params.database + '.zip',
+      stream = fs.createReadStream(path);
+  reply(stream);
 }

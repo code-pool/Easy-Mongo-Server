@@ -67,6 +67,28 @@ module.exports = {
     }
   },
 
+  zip : {
+    method : 'GET',
+    path : '/database/zip/{database}',
+    config : {
+      // auth : {
+      //   strategy : 'token',
+      //   scope : ['admin']
+      // },
+      validate : Validator.validateReqDownload(),
+      handler : function(request,reply) {
+
+        var series = new Series([
+          Validator.dump,
+          Controller.dump,
+          Controller.compress
+        ]);
+        
+        series.execute(request,reply);
+      }
+    }
+  },
+
   download : {
     method : 'GET',
     path : '/database/download/{database}',
@@ -80,8 +102,7 @@ module.exports = {
 
         var series = new Series([
           Validator.download,
-          Controller.dump,
-          Controller.compress
+          Controller.download
         ]);
         
         series.execute(request,reply);
