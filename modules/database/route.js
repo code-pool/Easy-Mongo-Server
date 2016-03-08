@@ -66,5 +66,27 @@ module.exports = {
       }
     }
   },
+
+  download : {
+    method : 'GET',
+    path : '/database/download/{database}',
+    config : {
+      // auth : {
+      //   strategy : 'token',
+      //   scope : ['admin']
+      // },
+      validate : Validator.validateReqDownload(),
+      handler : function(request,reply) {
+
+        var series = new Series([
+          Validator.download,
+          Controller.dump,
+          Controller.compress
+        ]);
+        
+        series.execute(request,reply);
+      }
+    }
+  }
   
 }

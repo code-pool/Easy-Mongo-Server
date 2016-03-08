@@ -1,6 +1,8 @@
 var Promise = require('bluebird'),
     MongoClient = require('mongodb').MongoClient,
     dbServer = 'mongodb://localhost:27017/',
+    archiver = require('archiver'),
+    fs = require('fs'),
     db = {};
 
 module.exports = { 
@@ -15,7 +17,8 @@ module.exports = {
   initDB : InitDB,
   collectionInfo : CollectionInfo,
   collectionSchemaVerified : CollectionSchemaVerified,
-  getDummyObj : GetDummyObj
+  getDummyObj : GetDummyObj,
+  compress : Compress
 };
 
 function CollectionInfo(database,col_name){
@@ -171,4 +174,30 @@ function GetDummyObj(fields){
   }
 
   return obj;
+}
+
+function Compress(database){
+
+  return new Promise(function(resolve,reject){
+
+    var targetFile = database + '.zip',
+        output = fs.createWriteStream(targetFile),
+        archive = archiver('zip');
+
+    output.on('close', function () {
+        console.log('Done converting zip file for database',database);
+        resolve();
+    });
+
+    archive.on('error', function(err){
+        reject(err);
+    });
+
+    archive.pipe(output);
+    archive.bulk([
+        { expand: true, cwd: 'dump/', src: ['**'], dest: database}
+    ]);
+
+    archive.finalize();
+  });
 }

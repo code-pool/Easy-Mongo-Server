@@ -1,12 +1,15 @@
 var Promise = require('bluebird'),
     dbUtils = require('utils/database'),
-    socketUtils = require('utils/socket');
+    socketUtils = require('utils/socket'),
+    childProcess = require('child_process');
 
 module.exports = {
   all : All,
   add : Add,
   rename : Rename,
-  delete : Delete
+  delete : Delete,
+  dump : Dump,
+  compress : Compress
 };
 
 function All(request,reply) {
@@ -53,4 +56,27 @@ function Delete(request,reply) {
     socketUtils.broadCast('db-delete',{database : request.query.database});
   },3000);
   reply.next();
+}
+
+function Dump(request,reply) {
+  var command = 'mongodump --db ' + request.params.database;
+  childProcess.exec(command,function(err,success){
+    if(err){
+      reply.next(err);
+      return;
+    }
+    reply.next();  
+  });
+}
+
+function Compress(request,reply) {
+  
+  dbUtils.compress(request.params.database)
+  .then(function(){
+    reply.next();
+  })
+  .catch(function(err){
+    reply.next(err);  
+  });
+  
 }

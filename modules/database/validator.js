@@ -10,10 +10,12 @@ module.exports = {
   add : Add,
   rename : Rename,
   delete : Delete,
+  download : Download,
 
   validateReqAll : ValidateReqAll,
   validateReqDelete : ValidateReqDelete,
-  validateReqAdd : ValidateReqAdd
+  validateReqAdd : ValidateReqAdd,
+  validateReqDownload : ValidateReqDownload
 };
 
 function All(request,reply) {
@@ -50,6 +52,17 @@ function Delete(request,reply) {
   
 }
 
+function Download(request,reply) {
+
+  if(dbUtils.validDB(request.params.database)) {
+    reply.next();
+    return;  
+  }
+
+  reply.next('Database does not exist');
+  
+}
+
 function ValidateReqAll() {
   return {};
 }
@@ -69,4 +82,12 @@ function ValidateReqDelete() {
       'secret' : joi.string().required()
     }
   }
+}
+
+function ValidateReqDownload() {
+  return {
+    'params' : {
+      'database' : joi.string().required()
+    }
+  };
 }
