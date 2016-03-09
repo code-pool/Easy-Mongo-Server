@@ -39,6 +39,7 @@ function Add(request,reply) {
          .then(function(data){
           data.verified = true;
           data.database = request.payload.database;
+          data.collections = 0;
           setTimeout(function(){
             socketUtils.broadCast('db-info',data)
           },3000);
