@@ -49,6 +49,7 @@ function Listeners() {
 function DbInfo() {
 
   var funcArray = [],
+      reducer = 2, // this is needed because mongodb returns count of hidden collections as well
       len;
 
   dbUtils.list()
@@ -67,6 +68,11 @@ function DbInfo() {
             return dbUtils.schemaVerified(database);
           })
           .then(function(verified){
+            reducer = 2;
+            if(verified) {
+              reducer = 3; 
+            }
+            dbInfo.collections -= reducer;
             dbInfo.verified = verified;
             setTimeout(function(){
               socket.emit('db-info',dbInfo);
