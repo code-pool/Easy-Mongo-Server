@@ -182,6 +182,7 @@ function Compress(database){
 
     var targetFile = database + '.zip',
         output = fs.createWriteStream(targetFile),
+        cwd = 'dump/' + database,
         archive = archiver('zip');
 
     output.on('close', function () {
@@ -195,7 +196,7 @@ function Compress(database){
 
     archive.pipe(output);
     archive.bulk([
-        { expand: true, cwd: 'dump/', src: ['**'], dest: database}
+        { expand: true, cwd: cwd, src: ['**'], dest: database}
     ]);
 
     archive.finalize();
