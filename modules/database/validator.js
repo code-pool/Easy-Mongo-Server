@@ -26,7 +26,7 @@ function All(request,reply) {
 
 function Add(request,reply) {
 
-  if(dbUtils.validDB(request.query.database)) {
+  if(dbUtils.validDB(request.payload.database)) {
     reply.next('Database already exists!');
     return;
   }
