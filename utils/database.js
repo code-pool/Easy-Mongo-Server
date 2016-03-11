@@ -65,7 +65,7 @@ function List() {
           continue;
         }
 
-        currObj = {'database' : databases[len].name,'stats' : {}};
+        currObj = {'database' : databases[len].name,'stats' : {},'processing' : true};
         formatted.push(currObj);
         currObj = {};
       }
