@@ -25,7 +25,7 @@ function List(request,reply) {
       if(blackList.indexOf(colName) >= 0){
         continue;
       }
-      formatted.push({'collection_name' : colName,'stats': {}});
+      formatted.push({'collection_name' : colName,'stats': {},'processing' : true});
     }
     setTimeout(function(){
       socketUtils.allCollectionInfo(request.params.database,formatted);
@@ -70,7 +70,9 @@ function Delete(request,reply) {
       col_name = request.params.collection;
 
   db[db_name].collection(col_name).drop(function(err,results){
-    socketUtils.broadCast('collection-delete',{'database' : db_name,'collection' : col_name });
+    setTimeout(function(){
+      socketUtils.broadCast('collection-delete',{'database' : db_name,'collection' : col_name });
+    },2000);
   });
 
   reply.next();
