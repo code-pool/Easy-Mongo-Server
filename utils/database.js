@@ -3,6 +3,8 @@ var Promise = require('bluebird'),
     dbServer = 'mongodb://localhost:27017/',
     archiver = require('archiver'),
     fs = require('fs'),
+    async = require('async'),
+    collUtils = require('./collection'),
     db = {};
 
 module.exports = { 
@@ -112,13 +114,29 @@ function Connect(database){
 }
 
 function SchemaVerified(database) {
+  
+  var verified = true;
+
   return new Promise(function(resolve,reject){
-    db[database].collection('__schema').findOne({},function(err,data){
-      if(err || !data) {
-        resolve(false);
-      }
-      resolve(true);
+    collUtils.list(database)
+    .then(function(dbCols){
+      
+      async.series(dbCols.map(function(currCol){
+        return function(cb) {
+
+          collUtils.verified(database,currCol.s.name)
+          .then(function(colVerified){
+            verified = verified && colVerified;
+            cb();
+          });
+
+        }
+      }),function(){
+        resolve(verified);
+      }); 
+
     });
+
   });
 }
 
@@ -134,7 +152,10 @@ function SetDB(database_name , database) {
   db[database_name] = database;
 }
 
-function GetDB(){
+function GetDB(database){
+  if(database) {
+    return db[database]; 
+  }
   return db;
 }
 
