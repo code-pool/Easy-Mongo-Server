@@ -38,3 +38,6 @@ dump
 
 # System specific environment variables
 .env
+
+# Redis dum
+*.rdb
